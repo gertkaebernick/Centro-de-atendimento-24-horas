@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal de Solicitação de Pagamento</title>
+  <style>
+    body {
+      background-color: #f4f4f9;
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      color: #333;
+    }
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #444;
+    }
+    label {
+      display: block;
+      margin: 15px 0 5px;
+    }
+    input[type="text"], select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .erro {
+      color: red;
+      font-size: 13px;
+      display: none;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .hidden {
+      display: none;
+    }
+    .message {
+      margin-top: 30px;
+      font-family: 'Courier New', monospace;
+      white-space: pre-line;
+      background-color: #eee;
+      padding: 20px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Solicitação de Pagamento</h2>
+    <div id="formulario">
+      <label for="nome">Nome</label>
+      <input type="text" id="nome" placeholder="Ex: Carlos" />
+      <div class="erro" id="erroNome">Campo obrigatório.</div>
+
+      <label for="sobrenome">Sobrenome</label>
+      <input type="text" id="sobrenome" placeholder="Ex: Silva" />
+      <div class="erro" id="erroSobrenome">Campo obrigatório.</div>
+
+      <label for="presidente">Nome do Presidente da Indonésia</label>
+      <input type="text" id="presidente" placeholder="Resposta obrigatória" />
+      <div class="erro" id="erroPresidente">Resposta incorreta. Tente novamente.</div>
+
+      <label for="motivo">Motivo da solicitação</label>
+      <select id="motivo" onchange="verificarMotivo()">
+        <option value="">-- Selecione --</option>
+        <option value="recebimento">Recebimento de dívida não paga por caloteiro</option>
+        <option value="presente">Presente de aniversário atrasado</option>
+        <option value="doce">Vender doce de leite vencido</option>
+        <option value="fabio">Xingar o Fabio</option>
+        <option value="joko">Falar com o presidente da Indonésia Joko Widodo</option>
+        <option value="outro">Outro</option>
+      </select>
+      <div class="erro" id="erroMotivo">Apenas solicitações por dívida não paga são aceitas.</div>
+
+      <div id="extraMotivo" class="hidden">
+        <label for="valor">Valor</label>
+        <input type="text" id="valor" placeholder="Ex: 120" oninput="verificarValor()" />
+        <div class="erro" id="erroValor">Valor incorreto, seu caloteiro.</div>
+      </div>
+
+      <button onclick="gerarCodigo()">Enviar</button>
+    </div>
+
+    <div id="codigo" class="hidden">
+      <p>Seu código de processo é: <strong id="num"></strong></p>
+      <label for="valida">Insira seu código para prosseguir:</label>
+      <input type="text" id="valida" />
+      <button onclick="finalizar()">Verificar</button>
+    </div>
+
+    <div id="mensagemFinal" class="hidden message"></div>
+  </div>
+
+  <script>
+    function verificarMotivo() {
+      const motivo = document.getElementById("motivo").value;
+      const extra = document.getElementById("extraMotivo");
+      const erroMotivo = document.getElementById("erroMotivo");
+
+      if (motivo === "recebimento") {
+        extra.classList.remove("hidden");
+        erroMotivo.style.display = "none";
+      } else {
+        extra.classList.add("hidden");
+        erroMotivo.style.display = "block";
+      }
+    }
+
+    function verificarValor() {
+      const valor = document.getElementById("valor").value;
+      const erro = document.getElementById("erroValor");
+      erro.style.display = valor !== "120" ? "block" : "none";
+    }
+
+    function gerarCodigo() {
+      let valido = true;
+
+      const nome = document.getElementById("nome").value;
+      const sobrenome = document.getElementById("sobrenome").value;
+      const presidente = document.getElementById("presidente").value.trim().toLowerCase();
+      const motivo = document.getElementById("motivo").value;
+      const valor = document.getElementById("valor").value;
+
+      document.getElementById("erroNome").style.display = nome ? "none" : "block";
+      document.getElementById("erroSobrenome").style.display = sobrenome ? "none" : "block";
+      document.getElementById("erroPresidente").style.display = presidente === "joko widodo" ? "none" : "block";
+      document.getElementById("erroMotivo").style.display = motivo === "recebimento" ? "none" : "block";
+
+      if (!nome || !sobrenome || presidente !== "joko widodo" || motivo !== "recebimento") {
+        valido = false;
+      }
+
+      if (motivo === "recebimento") {
+        const erro = document.getElementById("erroValor");
+        if (valor !== "120") {
+          erro.style.display = "block";
+          valido = false;
+        } else {
+          erro.style.display = "none";
+        }
+      }
+
+      if (!valido) return;
+
+      const codigo = Math.floor(100000 + Math.random() * 900000);
+      document.getElementById("formulario").classList.add("hidden");
+      document.getElementById("codigo").classList.remove("hidden");
+      document.getElementById("num").textContent = codigo;
+    }
+
+    function finalizar() {
+      const mensagem = `Para concluir o procedimento de envio do valor pendente,\né necessário o fornecimento da chave PIX do destinatário.\n\nSem ela, o sistema não consegue continuar.\n\nOu seja...\n**me manda teu PIX, corno.**`;
+      document.getElementById("codigo").classList.add("hidden");
+      document.getElementById("mensagemFinal").classList.remove("hidden");
+      document.getElementById("mensagemFinal").textContent = mensagem;
+    }
+  </script>
+</body>
+</html>
