@@ -5,176 +5,441 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Portal de Solicitação de Pagamento</title>
   <style>
-    body {
-      background-color: #f4f4f9;
-      font-family: Arial, sans-serif;
-      padding: 40px;
-      color: #333;
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+    :root {
+      --primary-color: #007bff;
+      --primary-hover-color: #0056b3;
+      --background-color: #f8f9fa;
+      --container-background: #ffffff;
+      --text-color: #212529;
+      --label-color: #495057;
+      --border-color: #ced4da;
+      --error-color: #dc3545;
+      --success-color: #28a745;
+      --font-family: 'Inter', sans-serif;
     }
+
+    body {
+      background-color: var(--background-color);
+      font-family: var(--font-family);
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
     .container {
       max-width: 500px;
-      margin: 0 auto;
-      background: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 100%;
+      background: var(--container-background);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease-in-out;
+      position: relative;
+      z-index: 1;
     }
+
     h2 {
       text-align: center;
-      color: #444;
+      color: var(--text-color);
+      margin-bottom: 30px;
+      font-weight: 600;
     }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
     label {
       display: block;
-      margin: 15px 0 5px;
+      margin-bottom: 8px;
+      color: var(--label-color);
+      font-weight: 500;
     }
-    input[type="text"], select {
+
+    input[type="text"],
+    select {
       width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      padding: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      box-sizing: border-box;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
+
+    input[type="text"]:focus,
+    select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+      outline: none;
+    }
+
     .erro {
-      color: red;
-      font-size: 13px;
+      color: var(--error-color);
+      font-size: 14px;
+      margin-top: 5px;
       display: none;
     }
+
     button {
       margin-top: 20px;
       width: 100%;
-      padding: 12px;
-      background-color: #007bff;
+      padding: 14px;
+      background-color: var(--primary-color);
       color: white;
       border: none;
-      border-radius: 4px;
+      border-radius: 8px;
       font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
+      transition: background-color 0.2s, transform 0.2s;
     }
+
     button:hover {
-      background-color: #0056b3;
+      background-color: var(--primary-hover-color);
+      transform: translateY(-2px);
     }
+
+    /* LINHA CORRIGIDA AQUI */
     .hidden {
-      display: none;
+      display: none !important;
     }
+    
+    .shake {
+      animation: shake 0.5s;
+    }
+
+    @keyframes shake {
+      10%, 90% { transform: translate3d(-1px, 0, 0); }
+      20%, 80% { transform: translate3d(2px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+      40%, 60% { transform: translate3d(4px, 0, 0); }
+    }
+
     .message {
       margin-top: 30px;
       font-family: 'Courier New', monospace;
-      white-space: pre-line;
-      background-color: #eee;
-      padding: 20px;
-      border-radius: 5px;
+      white-space: pre-wrap;
+      background-color: #e9ecef;
+      padding: 25px;
+      border-radius: 8px;
+      border-left: 5px solid var(--primary-color);
+      line-height: 1.6;
+    }
+
+    strong#num {
+      color: var(--primary-color);
+      font-size: 1.2em;
+    }
+
+    .corner-button {
+        position: fixed;
+        padding: 15px 25px;
+        background-color: var(--error-color);
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        font-weight: 600;
+        z-index: 1000;
+    }
+
+    #dont-click-btn {
+        bottom: 20px;
+        right: 20px;
+    }
+
+    #do-click-btn {
+        bottom: 20px;
+        left: 20px;
+        background-color: var(--success-color);
+    }
+    
+    .popup-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+    }
+
+    .popup-content {
+        background: white;
+        padding: 40px;
+        border-radius: 12px;
+        text-align: center;
+        position: relative;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .popup-content p {
+        margin: 0 0 20px 0;
+        font-size: 18px;
+    }
+
+    .close-btn {
+        background: #ccc;
+        color: #333;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    #continue-btn {
+        background-color: var(--primary-color);
+        color: white;
+        font-weight: 600;
+    }
+    
+    #final-image {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 100px;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        z-index: 1000;
+    }
+
+    #timer {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background-color: rgba(0,0,0,0.7);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 24px;
+        font-family: 'Courier New', monospace;
+        z-index: 1000;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>Solicitação de Pagamento</h2>
+
     <div id="formulario">
-      <label for="nome">Nome</label>
-      <input type="text" id="nome" placeholder="Ex: Carlos" />
-      <div class="erro" id="erroNome">Campo obrigatório.</div>
-
-      <label for="sobrenome">Sobrenome</label>
-      <input type="text" id="sobrenome" placeholder="Ex: Silva" />
-      <div class="erro" id="erroSobrenome">Campo obrigatório.</div>
-
-      <label for="presidente">Nome do Presidente da Indonésia</label>
-      <input type="text" id="presidente" placeholder="Resposta obrigatória" />
-      <div class="erro" id="erroPresidente">Resposta incorreta. Tente novamente.</div>
-
-      <label for="motivo">Motivo da solicitação</label>
-      <select id="motivo" onchange="verificarMotivo()">
-        <option value="">-- Selecione --</option>
-        <option value="recebimento">Recebimento de dívida não paga por caloteiro</option>
-        <option value="presente">Presente de aniversário atrasado</option>
-        <option value="doce">Vender doce de leite vencido</option>
-        <option value="fabio">Xingar o Fabio</option>
-        <option value="joko">Falar com o presidente da Indonésia Joko Widodo</option>
-        <option value="outro">Outro</option>
-      </select>
-      <div class="erro" id="erroMotivo">Apenas solicitações por dívida não paga são aceitas.</div>
-
-      <div id="extraMotivo" class="hidden">
+      <div class="form-group">
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" placeholder="Ex: Carlos" />
+        <div class="erro" id="erroNome">Campo obrigatório.</div>
+      </div>
+      <div class="form-group">
+        <label for="sobrenome">Sobrenome</label>
+        <input type="text" id="sobrenome" placeholder="Ex: Silva" />
+        <div class="erro" id="erroSobrenome">Campo obrigatório.</div>
+      </div>
+      <div class="form-group">
+        <label for="presidente">Nome do Presidente da Indonésia</label>
+        <input type="text" id="presidente" placeholder="Resposta obrigatória" />
+        <div class="erro" id="erroPresidente">Resposta incorreta. Tente novamente.</div>
+      </div>
+      <div class="form-group">
+        <label for="motivo">Motivo da solicitação</label>
+        <select id="motivo">
+          <option value="">-- Selecione --</option>
+          <option value="recebimento">Recebimento de dívida não paga por caloteiro</option>
+          <option value="presente">Presente de aniversário atrasado</option>
+          <option value="doce">Vender doce de leite vencido</option>
+          <option value="fabio">Xingar o Fabio</option>
+          <option value="prabowo">Falar com o presidente da Indonésia Prabowo Subianto</option>
+          <option value="outro">Outro</option>
+        </select>
+        <div class="erro" id="erroMotivo">Apenas solicitações por dívida não paga são aceitas.</div>
+      </div>
+      <div id="extraMotivo" class="hidden form-group">
         <label for="valor">Valor</label>
-        <input type="text" id="valor" placeholder="Ex: 120" oninput="verificarValor()" />
+        <input type="text" id="valor" placeholder="Ex: 120" />
         <div class="erro" id="erroValor">Valor incorreto, seu caloteiro.</div>
       </div>
-
-      <button onclick="gerarCodigo()">Enviar</button>
+      <button id="submit-btn">Enviar</button>
     </div>
 
     <div id="codigo" class="hidden">
       <p>Seu código de processo é: <strong id="num"></strong></p>
-      <label for="valida">Insira seu código para prosseguir:</label>
-      <input type="text" id="valida" />
-      <button onclick="finalizar()">Verificar</button>
+      <div class="form-group">
+        <label for="valida">Insira seu código para prosseguir:</label>
+        <input type="text" id="valida" />
+      </div>
+      <button id="verify-btn">Verificar</button>
     </div>
 
     <div id="mensagemFinal" class="hidden message"></div>
   </div>
 
+  <div id="dont-click-btn" class="corner-button">não clique aqui</div>
+  <div id="do-click-btn" class="corner-button hidden">clique aqui</div>
+  <img id="final-image" src="biscoito-2.png" alt="Um biscoito" class="hidden">
+  
+  <div id="ugly-popup" class="popup-overlay hidden">
+    <div class="popup-content">
+        <p>que coisa feia</p>
+        <button id="close-ugly-popup" class="close-btn">Fechar</button>
+    </div>
+  </div>
+  <div id="cookie-popup" class="popup-overlay hidden">
+    <div class="popup-content">
+        <p>garoto obediente, aqui um biscoito</p>
+        <button id="close-cookie-popup" class="close-btn">Fechar</button>
+    </div>
+  </div>
+  <div id="welcome-popup" class="popup-overlay">
+    <div class="popup-content">
+        <p>Atendimento 24 horas</p>
+        <button id="continue-btn" class="close-btn">Continuar</button>
+    </div>
+  </div>
+
+  <div id="timer" class="hidden">24:00:00</div>
+  <audio id="background-music" loop>
+      <source src="m1.mp3" type="audio/mpeg">
+      Seu navegador não suporta o elemento de áudio.
+  </audio>
+
   <script>
-    function verificarMotivo() {
-      const motivo = document.getElementById("motivo").value;
-      const extra = document.getElementById("extraMotivo");
-      const erroMotivo = document.getElementById("erroMotivo");
+    document.addEventListener('DOMContentLoaded', () => {
+        // Seletores de elementos do formulário principal
+        const form = document.getElementById('formulario');
+        const nomeInput = document.getElementById('nome');
+        const sobrenomeInput = document.getElementById('sobrenome');
+        const presidenteInput = document.getElementById('presidente');
+        const motivoSelect = document.getElementById('motivo');
+        const extraMotivoDiv = document.getElementById('extraMotivo');
+        const valorInput = document.getElementById('valor');
+        const codigoDiv = document.getElementById('codigo');
+        const numStrong = document.getElementById('num');
+        const mensagemFinalDiv = document.getElementById('mensagemFinal');
 
-      if (motivo === "recebimento") {
-        extra.classList.remove("hidden");
-        erroMotivo.style.display = "none";
-      } else {
-        extra.classList.add("hidden");
-        erroMotivo.style.display = "block";
-      }
-    }
+        // Seletores de botões
+        const submitBtn = document.getElementById('submit-btn');
+        const verifyBtn = document.getElementById('verify-btn');
+        const dontClickBtn = document.getElementById('dont-click-btn');
+        const doClickBtn = document.getElementById('do-click-btn');
+        const closeUglyPopupBtn = document.getElementById('close-ugly-popup');
+        const closeCookiePopupBtn = document.getElementById('close-cookie-popup');
+        const continueBtn = document.getElementById('continue-btn');
 
-    function verificarValor() {
-      const valor = document.getElementById("valor").value;
-      const erro = document.getElementById("erroValor");
-      erro.style.display = valor !== "120" ? "block" : "none";
-    }
+        // Seletores de elementos interativos
+        const uglyPopup = document.getElementById('ugly-popup');
+        const cookiePopup = document.getElementById('cookie-popup');
+        const welcomePopup = document.getElementById('welcome-popup');
+        const finalImage = document.getElementById('final-image');
+        const music = document.getElementById('background-music');
+        const timerDisplay = document.getElementById('timer');
 
-    function gerarCodigo() {
-      let valido = true;
+        // Funções de validação e lógica do formulário
+        const validarCampos = () => {
+            let valido = true;
+            document.querySelectorAll('.erro').forEach(el => el.style.display = 'none');
 
-      const nome = document.getElementById("nome").value;
-      const sobrenome = document.getElementById("sobrenome").value;
-      const presidente = document.getElementById("presidente").value.trim().toLowerCase();
-      const motivo = document.getElementById("motivo").value;
-      const valor = document.getElementById("valor").value;
+            if (!nomeInput.value) {
+                document.getElementById("erroNome").style.display = "block";
+                valido = false;
+            }
+            if (!sobrenomeInput.value) {
+                document.getElementById("erroSobrenome").style.display = "block";
+                valido = false;
+            }
+            if (presidenteInput.value.trim().toLowerCase() !== "prabowo subianto") {
+                document.getElementById("erroPresidente").style.display = "block";
+                valido = false;
+            }
+            if (motivoSelect.value !== "recebimento") {
+                document.getElementById("erroMotivo").style.display = "block";
+                valido = false;
+            }
+            if (motivoSelect.value === "recebimento" && valorInput.value !== "120") {
+                document.getElementById("erroValor").style.display = "block";
+                valido = false;
+            }
+            return valido;
+        };
 
-      document.getElementById("erroNome").style.display = nome ? "none" : "block";
-      document.getElementById("erroSobrenome").style.display = sobrenome ? "none" : "block";
-      document.getElementById("erroPresidente").style.display = presidente === "joko widodo" ? "none" : "block";
-      document.getElementById("erroMotivo").style.display = motivo === "recebimento" ? "none" : "block";
+        const gerarCodigo = () => {
+            form.classList.remove('shake');
+            if (!validarCampos()) {
+                form.classList.add('shake');
+                return;
+            }
+            const codigo = Math.floor(100000 + Math.random() * 900000);
+            form.classList.add("hidden");
+            codigoDiv.classList.remove("hidden");
+            numStrong.textContent = codigo;
+        };
 
-      if (!nome || !sobrenome || presidente !== "joko widodo" || motivo !== "recebimento") {
-        valido = false;
-      }
 
-      if (motivo === "recebimento") {
-        const erro = document.getElementById("erroValor");
-        if (valor !== "120") {
-          erro.style.display = "block";
-          valido = false;
-        } else {
-          erro.style.display = "none";
-        }
-      }
+        const finalizar = () => {
+            const mensagem = `Para concluir o procedimento de envio do valor pendente,\né necessário o fornecimento da chave PIX do destinatário.\n\nSem ela, o sistema não consegue continuar.\n\nOu seja...\n**me manda teu PIX, corno.**`;
+            codigoDiv.classList.add("hidden");
+            mensagemFinalDiv.classList.remove("hidden");
+            mensagemFinalDiv.innerHTML = mensagem.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        };
+        
+        const startTimer = () => {
+            let duration = 24 * 60 * 60; // 24 horas em segundos
+            const timerInterval = setInterval(() => {
+                if (duration <= 0) {
+                    clearInterval(timerInterval);
+                    timerDisplay.textContent = "Tempo Esgotado!";
+                } else {
+                    duration--;
+                    let hours = Math.floor(duration / 3600);
+                    let minutes = Math.floor((duration % 3600) / 60);
+                    let seconds = duration % 60;
+                    hours = hours < 10 ? '0' + hours : hours;
+                    minutes = minutes < 10 ? '0' + minutes : minutes;
+                    seconds = seconds < 10 ? '0' + seconds : seconds;
+                    timerDisplay.textContent = `${hours}:${minutes}:${seconds}`;
+                }
+            }, 1000);
+        };
+        
+        // Event Listeners (Ouvintes de Eventos)
+        motivoSelect.addEventListener('change', () => {
+            if (motivoSelect.value === "recebimento") {
+                extraMotivoDiv.classList.remove("hidden");
+            } else {
+                extraMotivoDiv.classList.add("hidden");
+            }
+        });
 
-      if (!valido) return;
+        submitBtn.addEventListener('click', gerarCodigo);
+        verifyBtn.addEventListener('click', finalizar);
 
-      const codigo = Math.floor(100000 + Math.random() * 900000);
-      document.getElementById("formulario").classList.add("hidden");
-      document.getElementById("codigo").classList.remove("hidden");
-      document.getElementById("num").textContent = codigo;
-    }
+        continueBtn.addEventListener('click', () => {
+            welcomePopup.classList.add('hidden');
+            music.volume = 0.2;
+            music.play().catch(error => console.error("Erro ao tocar música:", error));
+            timerDisplay.classList.remove('hidden');
+            startTimer();
+        });
 
-    function finalizar() {
-      const mensagem = `Para concluir o procedimento de envio do valor pendente,\né necessário o fornecimento da chave PIX do destinatário.\n\nSem ela, o sistema não consegue continuar.\n\nOu seja...\n**me manda teu PIX, corno.**`;
-      document.getElementById("codigo").classList.add("hidden");
-      document.getElementById("mensagemFinal").classList.remove("hidden");
-      document.getElementById("mensagemFinal").textContent = mensagem;
-    }
+        dontClickBtn.addEventListener('click', () => uglyPopup.classList.remove('hidden'));
+        closeUglyPopupBtn.addEventListener('click', () => {
+            uglyPopup.classList.add('hidden');
+            dontClickBtn.classList.add('hidden');
+            doClickBtn.classList.remove('hidden');
+        });
+
+        doClickBtn.addEventListener('click', () => cookiePopup.classList.remove('hidden'));
+        closeCookiePopupBtn.addEventListener('click', () => {
+            cookiePopup.classList.add('hidden');
+            finalImage.classList.remove('hidden');
+        });
+    });
   </script>
 </body>
 </html>
