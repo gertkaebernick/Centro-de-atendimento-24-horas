@@ -1,445 +1,239 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portal de Solicitação de Pagamento</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALERTA DE EMERGÊNCIA</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
 
-    :root {
-      --primary-color: #007bff;
-      --primary-hover-color: #0056b3;
-      --background-color: #f8f9fa;
-      --container-background: #ffffff;
-      --text-color: #212529;
-      --label-color: #495057;
-      --border-color: #ced4da;
-      --error-color: #dc3545;
-      --success-color: #28a745;
-      --font-family: 'Inter', sans-serif;
-    }
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Roboto Mono', monospace;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
 
-    body {
-      background-color: var(--background-color);
-      font-family: var(--font-family);
-      color: var(--text-color);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
-    }
+        .container {
+            border: 4px solid #ff0000;
+            max-width: 800px;
+            width: 100%;
+            padding: 25px;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.5);
+            background-color: #1a1a1a;
+        }
 
-    .container {
-      max-width: 500px;
-      width: 100%;
-      background: var(--container-background);
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease-in-out;
-      position: relative;
-      z-index: 1;
-    }
+        h1 {
+            color: #ff0000;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            animation: blink 1.5s linear infinite;
+        }
 
-    h2 {
-      text-align: center;
-      color: var(--text-color);
-      margin-bottom: 30px;
-      font-weight: 600;
-    }
+        @keyframes blink {
+            50% { opacity: 0.5; }
+        }
 
-    .form-group {
-      margin-bottom: 20px;
-    }
+        .protocol {
+            text-align: center;
+            color: #cccccc;
+            margin-bottom: 20px;
+        }
 
-    label {
-      display: block;
-      margin-bottom: 8px;
-      color: var(--label-color);
-      font-weight: 500;
-    }
+        .alert-info {
+            border: 1px dashed #555;
+            padding: 15px;
+            margin: 20px 0;
+            background-color: #0d0d0d;
+        }
 
-    input[type="text"],
-    select {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      box-sizing: border-box;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
+        .alert-info p {
+            margin: 10px 0;
+        }
 
-    input[type="text"]:focus,
-    select:focus {
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
-      outline: none;
-    }
+        strong {
+            color: #ffc107; /* Amarelo alerta */
+        }
 
-    .erro {
-      color: var(--error-color);
-      font-size: 14px;
-      margin-top: 5px;
-      display: none;
-    }
+        h2 {
+            color: #ffc107;
+            text-align: center;
+            border-top: 1px solid #555;
+            border-bottom: 1px solid #555;
+            padding: 10px 0;
+        }
 
-    button {
-      margin-top: 20px;
-      width: 100%;
-      padding: 14px;
-      background-color: var(--primary-color);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.2s, transform 0.2s;
-    }
+        #playButton {
+            background-color: #ffc107;
+            color: #000;
+            font-size: 1.2em;
+            font-weight: bold;
+            width: 100%;
+            padding: 20px;
+            border: 2px solid #b38600;
+            border-radius: 5px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: transform 0.2s, background-color 0.2s;
+            margin: 20px 0;
+        }
 
-    button:hover {
-      background-color: var(--primary-hover-color);
-      transform: translateY(-2px);
-    }
+        #playButton:hover {
+            background-color: #ffd040;
+            transform: scale(1.02);
+        }
 
-    /* LINHA CORRIGIDA AQUI */
-    .hidden {
-      display: none !important;
-    }
-    
-    .shake {
-      animation: shake 0.5s;
-    }
+        #videoContainer, #acceptanceProtocol {
+            display: none;
+        }
 
-    @keyframes shake {
-      10%, 90% { transform: translate3d(-1px, 0, 0); }
-      20%, 80% { transform: translate3d(2px, 0, 0); }
-      30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-      40%, 60% { transform: translate3d(4px, 0, 0); }
-    }
+        video {
+            width: 100%;
+            max-width: 100%;
+            display: block;
+            margin: 20px auto;
+            border: 2px solid #ff0000;
+        }
 
-    .message {
-      margin-top: 30px;
-      font-family: 'Courier New', monospace;
-      white-space: pre-wrap;
-      background-color: #e9ecef;
-      padding: 25px;
-      border-radius: 8px;
-      border-left: 5px solid var(--primary-color);
-      line-height: 1.6;
-    }
+        .cta-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
 
-    strong#num {
-      color: var(--primary-color);
-      font-size: 1.2em;
-    }
+        .btn {
+            padding: 15px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 5px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
 
-    .corner-button {
-        position: fixed;
-        padding: 15px 25px;
-        background-color: var(--error-color);
-        color: white;
-        border-radius: 8px;
-        cursor: pointer;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        font-weight: 600;
-        z-index: 1000;
-    }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
 
-    #dont-click-btn {
-        bottom: 20px;
-        right: 20px;
-    }
+        .btn-accept {
+            background-color: #28a745; /* Verde */
+            border: 2px solid #208038;
+        }
 
-    #do-click-btn {
-        bottom: 20px;
-        left: 20px;
-        background-color: var(--success-color);
-    }
-    
-    .popup-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0,0,0,0.5);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 2000;
-    }
+        .btn-accept:hover {
+            background-color: #33c152;
+        }
 
-    .popup-content {
-        background: white;
-        padding: 40px;
-        border-radius: 12px;
-        text-align: center;
-        position: relative;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    }
+        .btn-decline {
+            background-color: #dc3545; /* Vermelho */
+            border: 2px solid #b32b39;
+        }
 
-    .popup-content p {
-        margin: 0 0 20px 0;
-        font-size: 18px;
-    }
+        .btn-decline:hover {
+            background-color: #e64a59;
+        }
 
-    .close-btn {
-        background: #ccc;
-        color: #333;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-    }
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #777;
+            font-size: 0.8em;
+        }
 
-    #continue-btn {
-        background-color: var(--primary-color);
-        color: white;
-        font-weight: 600;
-    }
-    
-    #final-image {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        width: 100px;
-        height: auto;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        z-index: 1000;
-    }
+        #sadDogImage {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            cursor: pointer;
+        }
 
-    #timer {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        background-color: rgba(0,0,0,0.7);
-        color: white;
-        padding: 10px 20px;
-        border-radius: 8px;
-        font-size: 24px;
-        font-family: 'Courier New', monospace;
-        z-index: 1000;
-    }
-  </style>
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Solicitação de Pagamento</h2>
 
-    <div id="formulario">
-      <div class="form-group">
-        <label for="nome">Nome</label>
-        <input type="text" id="nome" placeholder="Ex: Carlos" />
-        <div class="erro" id="erroNome">Campo obrigatório.</div>
-      </div>
-      <div class="form-group">
-        <label for="sobrenome">Sobrenome</label>
-        <input type="text" id="sobrenome" placeholder="Ex: Silva" />
-        <div class="erro" id="erroSobrenome">Campo obrigatório.</div>
-      </div>
-      <div class="form-group">
-        <label for="presidente">Nome do Presidente da Indonésia</label>
-        <input type="text" id="presidente" placeholder="Resposta obrigatória" />
-        <div class="erro" id="erroPresidente">Resposta incorreta. Tente novamente.</div>
-      </div>
-      <div class="form-group">
-        <label for="motivo">Motivo da solicitação</label>
-        <select id="motivo">
-          <option value="">-- Selecione --</option>
-          <option value="recebimento">Recebimento de dívida não paga por caloteiro</option>
-          <option value="presente">Presente de aniversário atrasado</option>
-          <option value="doce">Vender doce de leite vencido</option>
-          <option value="fabio">Xingar o Fabio</option>
-          <option value="prabowo">Falar com o presidente da Indonésia Prabowo Subianto</option>
-          <option value="outro">Outro</option>
-        </select>
-        <div class="erro" id="erroMotivo">Apenas solicitações por dívida não paga são aceitas.</div>
-      </div>
-      <div id="extraMotivo" class="hidden form-group">
-        <label for="valor">Valor</label>
-        <input type="text" id="valor" placeholder="Ex: 120" />
-        <div class="erro" id="erroValor">Valor incorreto, seu caloteiro.</div>
-      </div>
-      <button id="submit-btn">Enviar</button>
+    <div class="container">
+        <h1>ALERTA DE NÍVEL MÁXIMO</h1>
+        <p class="protocol">PROTOCOLO DE EMERGÊNCIA Nº 789-SOL</p>
+
+        <div class="alert-info">
+            <p><strong>PARA:</strong> [!!! COLOQUE O NOME DO SEU AMIGO AQUI !!!]</p>
+            <p><strong>DE:</strong> Central de Controle de Crises de Bem-Estar (CCCB)</p>
+            <p><strong>ASSUNTO:</strong> CONVOCAÇÃO IMEDIATA - RISCO IMINENTE DE DEFICIÊNCIA CRÍTICA DE VITAMINA D E SOCIALIZAÇÃO</p>
+        </div>
+
+        <h2>AVISO URGENTE:</h2>
+        <p>Nossos satélites de monitoramento de humor detectaram uma anomalia perigosa vinda da sua localização. Os níveis de <strong>estresse cotidiano</strong> atingiram o pico, enquanto os índices de <strong>relaxamento</strong> estão perigosamente baixos.</p>
+        <p>Ameaça Identificada: <strong>Síndrome do Confinamento Voluntário Agudo (SCVA).</strong></p>
+
+        <h2>COMUNICADO OFICIAL</h2>
+
+        <button id="playButton">Clique para receber a Mensagem Presidencial</button>
+
+        <div id="videoContainer">
+            <video id="videoPlayer" controls>
+                <source src="Presidente_Precisa_Ir_à_Praia.mp4" type="video/mp4">
+                Seu navegador não suporta vídeos. A crise é pior do que imaginávamos.
+            </video>
+        </div>
+
+        <div id="acceptanceProtocol">
+            <h2>PROTOCOLO DE ACEITAÇÃO</h2>
+            <p>Selecione sua resposta abaixo.</p>
+
+            <div class="cta-buttons">
+                <a href="https://ig.me/m/gert__kaebernick" target="_blank" class="btn btn-accept">✅ SIM! (Me manda pra DM)</a>
+                <button id="declineButton" class="btn btn-decline">❌ NÃO... (Prepare-se para a tristeza)</button>
+            </div>
+        </div>
     </div>
 
-    <div id="codigo" class="hidden">
-      <p>Seu código de processo é: <strong id="num"></strong></p>
-      <div class="form-group">
-        <label for="valida">Insira seu código para prosseguir:</label>
-        <input type="text" id="valida" />
-      </div>
-      <button id="verify-btn">Verificar</button>
-    </div>
+    <img id="sadDogImage" src="imagens/bob.jpg" alt="Cachorrinho Bob Triste">
 
-    <div id="mensagemFinal" class="hidden message"></div>
-  </div>
+    <footer>
+        <p>© 2025 Ministério do Desestresse e Lazer Urgente (MDLU). A falha em comparecer resultará em zoeira de nível épico.</p>
+    </footer>
 
-  <div id="dont-click-btn" class="corner-button">não clique aqui</div>
-  <div id="do-click-btn" class="corner-button hidden">clique aqui</div>
-  <img id="final-image" src="biscoito-2.png" alt="Um biscoito" class="hidden">
-  
-  <div id="ugly-popup" class="popup-overlay hidden">
-    <div class="popup-content">
-        <p>que coisa feia</p>
-        <button id="close-ugly-popup" class="close-btn">Fechar</button>
-    </div>
-  </div>
-  <div id="cookie-popup" class="popup-overlay hidden">
-    <div class="popup-content">
-        <p>garoto obediente, aqui um biscoito</p>
-        <button id="close-cookie-popup" class="close-btn">Fechar</button>
-    </div>
-  </div>
-  <div id="welcome-popup" class="popup-overlay">
-    <div class="popup-content">
-        <p>Atendimento 24 horas</p>
-        <button id="continue-btn" class="close-btn">Continuar</button>
-    </div>
-  </div>
+    <script>
+        const playButton = document.getElementById('playButton');
+        const videoContainer = document.getElementById('videoContainer');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const acceptanceProtocol = document.getElementById('acceptanceProtocol');
+        const declineButton = document.getElementById('declineButton');
+        const sadDogImage = document.getElementById('sadDogImage');
 
-  <div id="timer" class="hidden">24:00:00</div>
-  <audio id="background-music" loop>
-      <source src="m1.mp3" type="audio/mpeg">
-      Seu navegador não suporta o elemento de áudio.
-  </audio>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Seletores de elementos do formulário principal
-        const form = document.getElementById('formulario');
-        const nomeInput = document.getElementById('nome');
-        const sobrenomeInput = document.getElementById('sobrenome');
-        const presidenteInput = document.getElementById('presidente');
-        const motivoSelect = document.getElementById('motivo');
-        const extraMotivoDiv = document.getElementById('extraMotivo');
-        const valorInput = document.getElementById('valor');
-        const codigoDiv = document.getElementById('codigo');
-        const numStrong = document.getElementById('num');
-        const mensagemFinalDiv = document.getElementById('mensagemFinal');
-
-        // Seletores de botões
-        const submitBtn = document.getElementById('submit-btn');
-        const verifyBtn = document.getElementById('verify-btn');
-        const dontClickBtn = document.getElementById('dont-click-btn');
-        const doClickBtn = document.getElementById('do-click-btn');
-        const closeUglyPopupBtn = document.getElementById('close-ugly-popup');
-        const closeCookiePopupBtn = document.getElementById('close-cookie-popup');
-        const continueBtn = document.getElementById('continue-btn');
-
-        // Seletores de elementos interativos
-        const uglyPopup = document.getElementById('ugly-popup');
-        const cookiePopup = document.getElementById('cookie-popup');
-        const welcomePopup = document.getElementById('welcome-popup');
-        const finalImage = document.getElementById('final-image');
-        const music = document.getElementById('background-music');
-        const timerDisplay = document.getElementById('timer');
-
-        // Funções de validação e lógica do formulário
-        const validarCampos = () => {
-            let valido = true;
-            document.querySelectorAll('.erro').forEach(el => el.style.display = 'none');
-
-            if (!nomeInput.value) {
-                document.getElementById("erroNome").style.display = "block";
-                valido = false;
-            }
-            if (!sobrenomeInput.value) {
-                document.getElementById("erroSobrenome").style.display = "block";
-                valido = false;
-            }
-            if (presidenteInput.value.trim().toLowerCase() !== "prabowo subianto") {
-                document.getElementById("erroPresidente").style.display = "block";
-                valido = false;
-            }
-            if (motivoSelect.value !== "recebimento") {
-                document.getElementById("erroMotivo").style.display = "block";
-                valido = false;
-            }
-            if (motivoSelect.value === "recebimento" && valorInput.value !== "120") {
-                document.getElementById("erroValor").style.display = "block";
-                valido = false;
-            }
-            return valido;
-        };
-
-        const gerarCodigo = () => {
-            form.classList.remove('shake');
-            if (!validarCampos()) {
-                form.classList.add('shake');
-                return;
-            }
-            const codigo = Math.floor(100000 + Math.random() * 900000);
-            form.classList.add("hidden");
-            codigoDiv.classList.remove("hidden");
-            numStrong.textContent = codigo;
-        };
-
-
-        const finalizar = () => {
-            const mensagem = `Para concluir o procedimento de envio do valor pendente,\né necessário o fornecimento da chave PIX do destinatário.\n\nSem ela, o sistema não consegue continuar.\n\nOu seja...\n**me manda teu PIX, corno.**`;
-            codigoDiv.classList.add("hidden");
-            mensagemFinalDiv.classList.remove("hidden");
-            mensagemFinalDiv.innerHTML = mensagem.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        };
-        
-        const startTimer = () => {
-            let duration = 24 * 60 * 60; // 24 horas em segundos
-            const timerInterval = setInterval(() => {
-                if (duration <= 0) {
-                    clearInterval(timerInterval);
-                    timerDisplay.textContent = "Tempo Esgotado!";
-                } else {
-                    duration--;
-                    let hours = Math.floor(duration / 3600);
-                    let minutes = Math.floor((duration % 3600) / 60);
-                    let seconds = duration % 60;
-                    hours = hours < 10 ? '0' + hours : hours;
-                    minutes = minutes < 10 ? '0' + minutes : minutes;
-                    seconds = seconds < 10 ? '0' + seconds : seconds;
-                    timerDisplay.textContent = `${hours}:${minutes}:${seconds}`;
-                }
-            }, 1000);
-        };
-        
-        // Event Listeners (Ouvintes de Eventos)
-        motivoSelect.addEventListener('change', () => {
-            if (motivoSelect.value === "recebimento") {
-                extraMotivoDiv.classList.remove("hidden");
-            } else {
-                extraMotivoDiv.classList.add("hidden");
-            }
+        playButton.addEventListener('click', function() {
+            playButton.style.display = 'none';
+            videoContainer.style.display = 'block';
+            videoPlayer.play();
         });
 
-        submitBtn.addEventListener('click', gerarCodigo);
-        verifyBtn.addEventListener('click', finalizar);
-
-        continueBtn.addEventListener('click', () => {
-            welcomePopup.classList.add('hidden');
-            music.volume = 0.2;
-            music.play().catch(error => console.error("Erro ao tocar música:", error));
-            timerDisplay.classList.remove('hidden');
-            startTimer();
+        videoPlayer.addEventListener('ended', function() {
+            acceptanceProtocol.style.display = 'block';
         });
 
-        dontClickBtn.addEventListener('click', () => uglyPopup.classList.remove('hidden'));
-        closeUglyPopupBtn.addEventListener('click', () => {
-            uglyPopup.classList.add('hidden');
-            dontClickBtn.classList.add('hidden');
-            doClickBtn.classList.remove('hidden');
+        declineButton.addEventListener('click', function() {
+            sadDogImage.style.display = 'block';
         });
 
-        doClickBtn.addEventListener('click', () => cookiePopup.classList.remove('hidden'));
-        closeCookiePopupBtn.addEventListener('click', () => {
-            cookiePopup.classList.add('hidden');
-            finalImage.classList.remove('hidden');
+        sadDogImage.addEventListener('click', function() {
+            sadDogImage.style.display = 'none';
         });
-    });
-  </script>
+    </script>
+
 </body>
 </html>
