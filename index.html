@@ -203,6 +203,7 @@
     </div>
 
     <img id="sadDogImage" src="bob.jpg" alt="Cachorrinho Bob Triste">
+    <audio id="sadViolin" src="bob.mp3" loop></audio>
 
     <footer>
         <p>© 2025 Ministério do Desestresse e Lazer Urgente (MDLU). A falha em comparecer resultará em zoeira de nível épico.</p>
@@ -215,6 +216,7 @@
         const acceptanceProtocol = document.getElementById('acceptanceProtocol');
         const declineButton = document.getElementById('declineButton');
         const sadDogImage = document.getElementById('sadDogImage');
+        const sadViolin = document.getElementById('sadViolin');
 
         playButton.addEventListener('click', function() {
             playButton.style.display = 'none';
@@ -228,10 +230,13 @@
 
         declineButton.addEventListener('click', function() {
             sadDogImage.style.display = 'block';
+            sadViolin.play();
         });
 
         sadDogImage.addEventListener('click', function() {
             sadDogImage.style.display = 'none';
+            sadViolin.pause();
+            sadViolin.currentTime = 0;
         });
     </script>
 
