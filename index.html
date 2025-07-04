@@ -219,6 +219,14 @@
         const sadViolin = document.getElementById('sadViolin');
 
         playButton.addEventListener('click', function() {
+            // --- INÍCIO DA CORREÇÃO ---
+            // "Prepara" o áudio de violino tocando e pausando-o imediatamente
+            // Isso sinaliza ao navegador que o usuário já interagiu com este áudio.
+            sadViolin.play();
+            sadViolin.pause();
+            sadViolin.currentTime = 0;
+            // --- FIM DA CORREÇÃO ---
+
             playButton.style.display = 'none';
             videoContainer.style.display = 'block';
             videoPlayer.play();
